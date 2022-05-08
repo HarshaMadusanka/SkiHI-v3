@@ -24,43 +24,46 @@ export const Hero = ({
   whitelistMint,
   error,
   pending,
+  url,
 }) => {
   const [open, setOpen] = useState(false);
-  const [daysTimer , setDays] = useState("00");
+  const [daysTimer, setDays] = useState("00");
   const [hoursTimer, setHours] = useState("00");
   const [minutesTimer, setMinutes] = useState("00");
   const [secondsTimer, setSeconds] = useState("00");
 
   let interval = useRef();
 
-  const startTimer = ()=>{
-    const countDownDate = new Date('May 30, 2022 00:00:00').getTime();
-    interval = setInterval(()=>{
+  const startTimer = () => {
+    const countDownDate = new Date("May 30, 2022 00:00:00").getTime();
+    interval = setInterval(() => {
       const now = new Date().getTime();
       const distance = countDownDate - now;
 
       const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor(distance % (1000 * 60 * 60 * 24)/ (1000 * 60 * 60))
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
-      const seconds = Math.floor((distance % (1000 * 60 )) / 1000)
+      const hours = Math.floor(
+        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-      if(distance < 0){
+      if (distance < 0) {
         clearInterval(interval.current);
-      } else{
+      } else {
         setDays(days);
         setHours(hours);
         setMinutes(minutes);
         setSeconds(seconds);
       }
-    },1000)
-  }
+    }, 1000);
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     startTimer();
-    return ()=>{
+    return () => {
       clearInterval(interval.current);
-    }
-  })
+    };
+  });
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -69,7 +72,7 @@ export const Hero = ({
     if (blockchain?.errorMsg?.length > 0) {
       toast.error(blockchain?.errorMsg, {
         position: "top-right",
-        autoClose: 1000,
+        autoClose: 3000,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,
@@ -80,7 +83,7 @@ export const Hero = ({
     } else if (blockchain?.successMsg?.length > 0) {
       toast.success(blockchain?.successMsg, {
         position: "top-right",
-        autoClose: 1000,
+        autoClose: 3000,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,
@@ -140,7 +143,9 @@ export const Hero = ({
                 pellentesque. In id sapien sem. Sed vel pellentesque lorem.
               </p> */}
               <h4>
-                Please Connect Rinkeby Network
+                {blockchain.account
+                  ? `Connected to - ${blockchain.account}`
+                  : `Please Connect Rinkeby Network`}
               </h4>
               <a href="" className="whitepaper">
                 Join Our Discord
@@ -226,6 +231,15 @@ export const Hero = ({
           </button>
           <p>{blockchain.account ? blockchain.account : "Not connected"}</p>
           {error && <p>You are not in whiteList</p>}
+          {url && (
+            <p>
+              Visit&nbsp;
+              <a href="https://opensea.io/" target="_blank">
+                Opensea.io &nbsp;
+              </a>
+              to View your NFT
+            </p>
+          )}
         </div>
       </Modal>
     </div>

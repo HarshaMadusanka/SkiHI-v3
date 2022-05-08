@@ -24,8 +24,8 @@ import whiteList from "./utils/Whitelist";
 
 import { MerkleTree } from "merkletreejs";
 import keccak256 from "keccak256";
-import {toast, ToastContainer} from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.min.css';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
 // const merkleRoot =  (address) => {
 
 // };
@@ -35,7 +35,8 @@ const truncate = (input, len) =>
 
 function App() {
   // const [error, setError]= useState("You are not in whiteList")
-  const [pending,setPending] =useState(false);
+  const [pending, setPending] = useState(false);
+  const [url, setUrl] = useState(false);
   const [isError, setIsError] = useState(false);
   const [merkleProof, setMerkleProof] = useState([]);
   const dispatch = useDispatch();
@@ -94,30 +95,35 @@ function App() {
         setFeedback("Sorry, something went wrong please try again later.");
         toast.error("Sorry, something went wrong please try again later.", {
           position: "top-right",
-          autoClose: 1000,
+          autoClose: 6000,
           hideProgressBar: true,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme:'colored'
-          });
-          setPending(false);
+          theme: "colored",
+        });
+        setUrl(false);
+        setPending(false);
         setClaimingNft(false);
       })
       .then((receipt) => {
         console.log(receipt);
-        toast.success(`WOW, the ${CONFIG.NFT_NAME} is yours! go visit Opensea.io to view it`, {
-          position: "top-right",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme:'colored'
-          });
-          setPending(false);
+        toast.success(
+          `WOW, the ${CONFIG.NFT_NAME} is yours! go visit Opensea.io to view it`,
+          {
+            position: "top-right",
+            autoClose: 6000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          }
+        );
+        setUrl(true);
+        setPending(false);
         console.log(
           `WOW, the ${CONFIG.NFT_NAME} is yours! go visit Opensea.io to view it.`
         );
@@ -138,14 +144,14 @@ function App() {
     setFeedback(`Minting your ${CONFIG.NFT_NAME}...`);
     toast.success(`Minting your ${CONFIG.NFT_NAME}...`, {
       position: "top-right",
-      autoClose: 1000,
+      autoClose: 6000,
       hideProgressBar: true,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      theme:'colored'
-      })
+      theme: "colored",
+    });
     setClaimingNft(true);
     blockchain.smartContract.methods
       .whitelistMint(
@@ -167,31 +173,36 @@ function App() {
         console.log(err);
         toast.error("Sorry, something went wrong please try again later.", {
           position: "top-right",
-          autoClose: 1000,
+          autoClose: 6000,
           hideProgressBar: true,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme:'colored'
-          });
+          theme: "colored",
+        });
+        setUrl(false);
         setFeedback("Sorry, something went wrong please try again later.");
         setPending(false);
         setClaimingNft(false);
       })
       .then((receipt) => {
         console.log(receipt);
-        toast.success(`WOW, the ${CONFIG.NFT_NAME} is yours! go visit Opensea.io to view it`, {
-          position: "top-right",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme:'colored'
-          })
-          setPending(false);
+        toast.success(
+          `WOW, the ${CONFIG.NFT_NAME} is yours! go visit Opensea.io to view it`,
+          {
+            position: "top-right",
+            autoClose: 6000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          }
+        );
+        setUrl(true);
+        setPending(false);
         console.log(
           `WOW, the ${CONFIG.NFT_NAME} is yours! go visit Opensea.io to view it.`
         );
@@ -263,7 +274,7 @@ function App() {
     console.log("Root===>", buf2hex(tree.getRoot()));
     const account = addresses.includes(blockchain.account);
     console.log(account);
-    if(data.whiteListSale == true){
+    if (data.whiteListSale == true) {
       if (account) {
         const leaf = keccak256(blockchain.account); // address from wallet using walletconnect/metamask
         const proof = tree.getProof(leaf).map((x) => buf2hex(x.data));
@@ -289,7 +300,7 @@ function App() {
             element={
               <React.Fragment>
                 <Hero
-                pending={pending}
+                  pending={pending}
                   mint={claimNFTs}
                   decrementMintAmount={decrementMintAmount}
                   incrementMintAmount={incrementMintAmount}
@@ -302,6 +313,7 @@ function App() {
                   blockchain={blockchain}
                   whitelistMint={whiteListMint}
                   error={isError}
+                  url={url}
                 />
                 <About />
                 <Features />
@@ -318,7 +330,7 @@ function App() {
           />
           {/* <Route path="/freebies" element={<Page2/>}/> */}
         </Routes>
-        <ToastContainer/>
+        <ToastContainer />
       </div>
     </BrowserRouter>
   );
